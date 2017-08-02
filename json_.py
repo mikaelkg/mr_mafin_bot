@@ -16,3 +16,4 @@ file=open(filename,'r',encoding="UTF-8")
 non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
 print(str(json.load(file)).translate(non_bmp_map))
 file.close()
+#Привет

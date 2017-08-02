@@ -106,7 +106,7 @@ class games:
                         list_param=[self.players[i].username,
                                     self.players[i].gamer_id,self.players[i].chat_id,self.players[i].true_username]
                         self.players[i]=civilian(*list_param)
-                        self.players[vibor].role="Мир"
+                        self.players[i].role="Мир"
 
         #Решение, кого убить
         def night_kill(self,bot):
@@ -199,16 +199,18 @@ class games:
 
 class gamer:
         def __init__(self,username,gamer_id,chat_id,true_username):
-                self.role=None
-                self.true_username=true_username
-                self.username=username
-                self.status="Жив"
-                self.position=None
+                
+                self.username=username#Имя и фамилия пользователя
                 self.gamer_id=gamer_id
                 self.chat_id=chat_id
-                self.sloupok_flag=True
-                self.death_digit=0
+                self.true_username=true_username#username пользователя, если есть
+                
+                self.status="Жив"
+                self.position=None#Принимает значение Победитель и Приогравший
+                self.sloupok_flag=True#Флаг несовершения действия
                 self.sloupok_choice=False
+                self.death_digit=0#другой флаг несовершения действия (сейчас для только для комиссара)
+                self.role=None
                 
         def day_action(self,bot,game):
                 if self.status=='Жив':
@@ -238,7 +240,7 @@ class mafia(gamer):
                 if self.status=="Жив":
                         keyboard = types.InlineKeyboardMarkup(1)
                         for j in game.players.values():
-                                if j.role!='Мафия' and (j.status=='Жив' or j.status=="Пьян"):
+                                if j.role!='Мафия' and (j.status=='Жив' or j.status=="Пьян") and j.gamer_id!=self.gamer_id:
                                         button=types.InlineKeyboardButton(callback_data='kill_'+str(j.gamer_id),text=j.username)
                                         keyboard.add(button)
                         button=types.InlineKeyboardButton(callback_data='skip_'+"skip",text="skip")
@@ -250,7 +252,7 @@ class mafia(gamer):
                 #считывание всех мафий в игре
                 bratva=[]
                 for j in game.players.values():
-                        if self.gamer_id!=j and j.role=='Мафия':
+                        if self.gamer_id!=j.gamer_id and j.role=='Мафия':
                                 bratva.append(j.username)
                                 
                 if bratva:#если есть другие мафии

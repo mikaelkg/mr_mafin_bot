@@ -312,7 +312,7 @@ class comissar(gamer):
                         return True
                 else:
                         return False
-
+        #послать роль комиссару
         def send_role(self,bot):
                 kill=False
                 

@@ -4,7 +4,7 @@ import time
 import random
 from classes import *
 
-bot = telebot.TeleBot('418962797:AAFYE5wH9h-jKEUVvoedKeADhw6b_vPUPv8')
+bot = telebot.TeleBot(<your token>)
 
                
 game=games()#создаем объект игры

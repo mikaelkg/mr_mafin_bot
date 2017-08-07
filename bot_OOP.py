@@ -76,7 +76,7 @@ def start_game(message):
                                                            
                         while True:
 
-                                #послание в чат сообщения о начале ночи
+                                #отправка в чат сообщения о начале ночи
                                 with open("Text_for_night.txt",encoding="UTF-8") as text:
                                         text=text.read().split('break\n')
                                 bot.send_message(message.chat.id, random.choice(text))
@@ -109,12 +109,14 @@ def start_game(message):
                                 #дневные действия 
                                 for i in game.players.values():
                                         i.day_action(bot,game)
+                                    
                                 #ожидание пока не истечет время или все совершат действие
                                 vote_time_counter=game.vote_time
                                 while (vote_time_counter>0 and
                                        not all(map(lambda x: x.sloupok_flag==False or x.status!='Жив',game.players.values()))):
                                         vote_time_counter-=1
                                         time.sleep(1)
+                                    
                                 #оповещение не успевших проголосовать игроков      
                                 for i in game.players.values():
                                        i.sent_sloupok(bot)
@@ -236,64 +238,6 @@ def mafia_chat(message):
                         for i in game.players.values():
                                 if i.role=='Мафия' and i.status=='Жив' and i.gamer_id!= message.from_user.id:
                                         bot.send_message(i.gamer_id, message.from_user.username+':\n'+message.text)
-'''  
-@bot.callback_query_handler(func=lambda call: True)
-def callback_inline(call):
-        # Если сообщение из чата с ботом
-                if call.message:
-                if call.data == "test":
-                        keyboard2 = types.InlineKeyboardMarkup()
-                        callback_button2 = types.InlineKeyboardButton(text="join", callback_data="tests")
-                        keyboard2.add(callback_button2)
-                        bot.send_message(call.from_user.id, "Нажми join и присоединяйся!", reply_markup=keyboard2)
-                elif call.data == "tests":
-                        if not call.from_user.id in players:
-                                players[call.from_user.id]={'username':call.from_user.username,'role':None}
-                                bot.edit_message_text(chat_id=call.from_user.id, message_id=call.message.message_id, text='Ты в игре!')
-                        else:
-                                bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
-                                '''
-'''
-@bot.message_handler(content_types=["text"])
-def any_msg(message):
-    # Создаем клавиатуру и каждую из кнопок (по 2 в ряд)
-    keyboard = types.InlineKeyboardMarkup(row_width=2)
-    url_button = types.InlineKeyboardButton(text="URL", url="https://ya.ru")
-    callback_button = types.InlineKeyboardButton(text="Callback", callback_data="test")
-    switch_button = types.InlineKeyboardButton(text="Switch", switch_inline_query="Telegram")
-    keyboard.add(url_button, callback_button, switch_button)
-    bot.send_message(message.chat.id, "Я – сообщение из обычного режима", reply_markup=keyboard)
-
-
-@bot.callback_query_handler(func=lambda call: True)
-def callback_inline(call):
-    # Если сообщение из чата с ботом
-    if call.message:
-        if call.data == "test":
-            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Пыщь")
-            # Уведомление в верхней части экрана
-            bot.answer_callback_query(callback_query_id=call.id, show_alert=False, text="Пыщь!")
-    # Если сообщение из инлайн-режима
-    elif call.inline_message_id:
-        if call.data == "test":
-            bot.edit_message_text(inline_message_id=call.inline_message_id, text="Бдыщь")
-
-
-# Простейший инлайн-хэндлер для ненулевых запросов
-@bot.inline_handler(lambda query: len(query.query) > 0)
-def query_text(query):
-    kb = types.InlineKeyboardMarkup()
-    kb.add(types.InlineKeyboardButton(text="Нажми меня", callback_data="test"))
-    results = []
-    # Обратите внимание: вместо текста - объект input_message_content c текстом!
-    single_msg = types.InlineQueryResultArticle(
-        id="1", title="Press me",
-        input_message_content=types.InputTextMessageContent(message_text="Я – сообщение из инлайн-режима"),
-        reply_markup=kb
-    )
-    results.append(single_msg)
-    bot.answer_inline_query(query.id, results)
-'''
 
 if __name__ == '__main__':
     bot.polling(none_stop=True)
